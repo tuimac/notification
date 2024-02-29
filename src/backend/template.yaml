@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Notification '
+
+Globals:
+  Function:
+    Runtime: python3.10
+    Timeout: 60
+    MemorySize: 512
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        DB_HOST: !Ref DynamodbURL
+
+  Api:
+    Cors:
+      AllowMethods: "'OPTIONS,GET,POST'"
+      AllowHeaders: "'Content-Type'"
+      AllowOrigin: "'*'"
+      MaxAge: "'180'"
+
+Resources:
+  # API
+  Notification:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: notification/
+      Handler: post.lambda_handler
+      Events:
+        ListAnswers:
+          Type: Api
+          Properties:
+            Path: /notification
+            Method: POST
